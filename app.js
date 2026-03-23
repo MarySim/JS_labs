@@ -1,501 +1,545 @@
-// Лабораторная работа 2
-// Функции и массивы
-// Функции
+// Лабораторная работа 3
+// Объекты и классы
+// Функции-конструкторы и методы объектов
 
-console.log('Функции\n');
-
+console.log('\n-------------------------------------------------------------------------\n');
+console.log('Функции-конструкторы и методы объектов\n');
 console.log('Задание 1\n');
 
-// Функция вычисляет разность и выводит результат
-function showDifference(a, b) {
-	console.log(`Результат вычитания ${a} - ${b} = ${a - b}`);
-}
 
-// Функция только вычисляет разность и возвращает результат
-function getDifference(a, b) {
-	return a - b;
-}
-
-// Вызов функции с выводом внутри
-showDifference(12, 5);
-
-// Вызов функции с выводом в основной программе
-let diff = getDifference(20, 8);
-console.log(`20 - 8 = ${diff}`);
+let person = {};
+person.name = 'Alice';
+person.surname = 'Brown';
+// Изменяем значение
+person.name = 'Bob';
+delete person.name;
+console.log(person);
 
 console.log('\n-------------------------------------------------------------------------\n');
-
 console.log('Задание 2\n');
 
-// Функция приветствия в зависимости от возраста
-function ageGreeting(age) {
-	if (age < 18) {
-		console.log('Привет, малыш!');
-	} else {
-		console.log('Здравствуйте, юноша!');
-	}
+// Объект с информацией о браузере
+let myBrowser = {
+	name: 'Microsoft Internet Explorer',
+	version: '9.0'
+};
+// Перебор свойств циклом for in
+for (let key in myBrowser) {
+	console.log(`${key}: ${myBrowser[key]}`);
 }
 
-// Проверка для разных возрастов
-ageGreeting(10);
-ageGreeting(21);
-
 console.log('\n-------------------------------------------------------------------------\n');
-
 console.log('Задание 3\n');
 
-// Функция находит максимальное из трех чисел
-function findMax(a, b, c) {
-	return Math.max(a, b, c);
+function isEmpty(obj) {
+	for (let key in obj) {
+		return false; // если есть хотя бы одно свойство
+	}
+	return true; // если свойств нет
 }
-
-// Вывод результата
-console.log('Максимальное из 4, 9, 6:', findMax(4, 9, 6));
+console.log(isEmpty({}));
+console.log(isEmpty({ age: 25 }));
 
 console.log('\n-------------------------------------------------------------------------\n');
-
 console.log('Задание 4\n');
 
-// Глобальная переменная
-let message = 'Глобальная переменная';
+// const защищает переменную, но не содержимое объекта
+const testUser = {
+	name: 'Mike'
+};
+testUser.name = 'Alex'; // Работает - меняем свойство
+console.log(testUser);
 
-// Функция с локальной переменной
-function showMessage() {
-	let message = 'Локальная переменная';
-	console.log(message);
-}
-
-// Вызов функции - выведет локальную переменную
-showMessage();
-
-// Вывод глобальной переменной - она не изменилась
-console.log(message);
-
-// Пояснение
-console.log('Объяснение: внутри функции своя локальная переменная, она не влияет на глобальную.');
+console.log('const защищает от переназначения, но не от изменения свойств');
 
 console.log('\n-------------------------------------------------------------------------\n');
-
 console.log('Задание 5\n');
 
-// Функция для вычисления u по формуле
-function calculateU(x, y, z) {
-	// Вычисляем максимумы для числителя
-	let max1 = Math.max(x, y);
-	let max2 = Math.max(x + y, z);
-	// Вычисляем максимум для знаменателя
-	let max3 = Math.max(0.5, x + z);
-	// Возвращаем результат по формуле
-	return (max1 + max2) / (max3 * max3);
+// Функция умножает все числовые свойства на 2
+function multiplyNumeric(obj) {
+	for (let key in obj) {
+		if (typeof obj[key] === 'number') {
+			obj[key] *= 2;
+		}
+	}
 }
 
-// Проверка функции для разных значений
-console.log(`u для (2, 3, 4) = ${calculateU(2, 3, 4)}`);
-console.log(`u для (1, 5, 2) = ${calculateU(1, 5, 2)}`);
+let data = {
+	price: 500,
+	count: 15,
+	title: 'Товар'
+};
+multiplyNumeric(data);
+console.log(data);
 
 console.log('\n-------------------------------------------------------------------------\n');
-
 console.log('Задание 6\n');
 
-// Функция вычисляет периметр многоугольника по координатам вершин
-function calculatePerimeter(...coordinates) {
-	// Проверка на четное количество координат
-	if (coordinates.length % 2 !== 0) {
-		throw new Error('Нужно четное количество координат (x1, y1, ..., xn, yn).');
+// Объект-калькулятор с методами
+let calc = {
+	num1: 0,
+	num2: 0,
+	read(x, y) {
+		this.num1 = x;
+		this.num2 = y;
+	},
+	sum() {
+		return this.num1 + this.num2;
+	},
+	mul() {
+		return this.num1 * this.num2;
 	}
-
-	// Определяем количество вершин
-	const vertices = coordinates.length / 2;
-	// Проверка на минимальное количество вершин
-	if (vertices < 3) {
-		throw new Error('Нужно минимум 3 вершины для многоугольника.');
-	}
-
-	let perimeter = 0;
-
-	// Вычисляем длину каждой стороны и суммируем
-	for (let i = 0; i < vertices; i++) {
-		// Координаты текущей вершины
-		const x1 = coordinates[i * 2];
-		const y1 = coordinates[i * 2 + 1];
-		// Индекс следующей вершины (замыкаем на первую)
-		const nextIndex = (i + 1) % vertices;
-		// Координаты следующей вершины
-		const x2 = coordinates[nextIndex * 2];
-		const y2 = coordinates[nextIndex * 2 + 1];
-
-		// Вычисляем длину стороны и добавляем к периметру
-		perimeter += Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
-	}
-
-	return perimeter;
-}
-
-// Примеры вычисления периметров
-console.log('Периметр прямоугольника (1,0, 1,1, 0,1, 0,0):', 
-	calculatePerimeter(1, 0, 1, 1, 0, 1, 0, 0));
-console.log('Периметр треугольника (0,0, 2,0, 0,3):', 
-	calculatePerimeter(0, 0, 2, 0, 0, 3));
+};
+calc.read(5, 9);
+console.log('Сумма:', calc.sum());
+console.log('Произведение:', calc.mul());
 
 console.log('\n-------------------------------------------------------------------------\n');
-
 console.log('Задание 7\n');
 
-// Рекурсивная функция для вычисления n-го члена последовательности
-function getSequenceTerm(n) {
-	// Проверка входных данных
-	if (!Number.isInteger(n) || n < 1) {
-		throw new Error('n должно быть целым числом и больше или равно 1.');
+// Объект с поддержкой цепочки вызовов (каждый метод возвращает this)
+let ladder = {
+	steps: 0,
+	up() {
+		this.steps++;
+		return this; // возвращаем объект для цепочки
+	},
+	down() {
+		this.steps--;
+		return this;
+	},
+	show() {
+		console.log('Ступенька:', this.steps);
+		return this;
 	}
-
-	// Базовый случай: первый член равен 1
-	if (n === 1) {
-		return { value: 1, total: 1 };
-	}
-
-	// Рекурсивный вызов для предыдущего члена
-	const previous = getSequenceTerm(n - 1);
-	// Текущий член равен синусу суммы всех предыдущих
-	const currentValue = Math.sin(previous.total);
-	// Возвращаем значение и обновленную сумму
-	return { value: currentValue, total: previous.total + currentValue };
-}
-
-// Функция для получения только значения n-го члена
-function getNthTerm(n) {
-	return getSequenceTerm(n).value;
-}
-
-// Вывод первых четырех членов последовательности
-console.log('a₁ =', getNthTerm(1));
-console.log('a₂ =', getNthTerm(2));
-console.log('a₃ =', getNthTerm(3));
-console.log('a₄ =', getNthTerm(4));
-
-// Проверка соответствия условию
-console.log('Проверка a₂:', getNthTerm(2).toFixed(5) === Math.sin(1).toFixed(5));
+};
+ladder.up();
+ladder.up();
+ladder.down();
+ladder.showStep(); // 1
+ladder.down();
+ladder.showStep(); // 0
 
 console.log('\n-------------------------------------------------------------------------\n');
-
-
-
-// Массивы
-
-console.log('Массивы\n');
-
-console.log('Задание 1\n');
-
-// Создание пустого массива
-let firstArray = [];
-// Присваивание значений трем элементам
-firstArray[0] = 42;
-firstArray[1] = 77;
-firstArray[2] = 91;
-// Вывод элемента с индексом 2
-console.log(firstArray[2]);
-// Вывод количества элементов
-console.log(firstArray.length);
-// Удаление второго элемента (индекс 1)
-firstArray.splice(1, 1);
-// Вывод всех элементов массива
-for (let i = 0; i < firstArray.length; i++) {
-	console.log(firstArray[i]);
-}
-
-console.log('\n-------------------------------------------------------------------------\n');
-
-console.log('Задание 2\n');
-
-// Массив с названиями стран
-let countryList = ['Германия', 'Франция', 'Италия', 'Испания'];
-// Массив с населением соответствующих стран
-let populationList = [83000000, 67000000, 60000000, 47000000];
-
-// Функция для вывода с использованием цикла for с счетчиком
-function displayWithFor(country, pop) {
-	for (let i = 0; i < country.length; i++) {
-		console.log(`${country[i]}: ${pop[i]}`);
-	}
-}
-
-// Функция для вывода с использованием цикла for in
-function displayWithForIn(country, pop) {
-	for (let index in country) {
-		console.log(`${country[index]}: ${pop[index]}`);
-	}
-}
-
-// Вызов обеих функций
-displayWithFor(countryList, populationList);
-displayWithForIn(countryList, populationList);
-
-console.log('\n-------------------------------------------------------------------------\n');
-
-console.log('Задание 3\n');
-
-// Исходный массив с названиями месяцев
-let monthArray = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-// Метод pop() удаляет последний элемент и возвращает его
-let removedElement = monthArray.pop();
-// Вывод результирующего массива через пробел
-console.log(monthArray.join(' '));
-// Вывод удаленного элемента
-console.log(removedElement);
-
-console.log('\n-------------------------------------------------------------------------\n');
-
-console.log('Задание 4\n');
-
-// Исходный массив
-let numbers1 = [10, 20, 30, 40, 50, 60, 70];
-// Метод slice(0, 3) возвращает первые 3 элемента
-let firstThree = numbers1.slice(0, 3);
-// Вывод результата
-console.log(firstThree);
-
-console.log('\n-------------------------------------------------------------------------\n');
-
-console.log('Задание 5\n');
-
-// Исходный массив
-let numbers2 = [11, 22, 33, 44, 55, 66, 77];
-// Метод splice(1, 3) удаляет 3 элемента начиная с индекса 1
-let removedNumbers = numbers2.splice(1, 3);
-// Вывод измененного массива
-console.log(numbers2);
-// Вывод удаленных элементов
-console.log(removedNumbers);
-
-console.log('\n-------------------------------------------------------------------------\n');
-
-console.log('Задание 6\n');
-
-// Исходный массив
-let numbers3 = [2, 4, 6, 8, 10];
-// Создаем копию массива и применяем reverse()
-let reversedArray = [...numbers3].reverse();
-// Вывод результата
-console.log(reversedArray);
-
-console.log('\n-------------------------------------------------------------------------\n');
-
-console.log('Задание 7\n');
-
-// Смешанный массив из чисел и букв
-let mixedArray = ['d', 7, 3, 'c', 5, 2, 6, 'b', 1, 'a'];
-// Сортировка: сначала числа по возрастанию, потом буквы по алфавиту
-mixedArray.sort(function(a, b) {
-	// Проверяем тип элементов
-	let aIsNumber = typeof a === 'number';
-	let bIsNumber = typeof b === 'number';
-
-	// Если оба числа - сортируем по возрастанию
-	if (aIsNumber && bIsNumber) {
-		return a - b;
-	}
-	// Если a - число, а b - буква, число должно быть раньше
-	if (aIsNumber && !bIsNumber) {
-		return -1;
-	}
-	// Если a - буква, а b - число, буква должна быть позже
-	if (!aIsNumber && bIsNumber) {
-		return 1;
-	}
-	// Если оба не числа - сортируем как строки
-	return String(a).localeCompare(String(b));
-});
-// Вывод результата
-console.log(mixedArray);
-
-console.log('\n-------------------------------------------------------------------------\n');
-
 console.log('Задание 8\n');
 
-// Исходный массив
-let numbers4 = [3, 6, 9, 12, 15];
-// Метод join объединяет элементы с указанным разделителем
-console.log(numbers4.join('+'));
+// Функция-конструктор для браузера
+function AppBrowser(name, version) {
+	this.name = name;
+	this.version = version;
+	this.info = function() {
+		console.log(`Браузер: ${this.name}, версия: ${this.version}`);
+	};
+}
+let myApp = new AppBrowser('Microsoft Internet Explorer', '9.0');
+myApp.info();
 
 console.log('\n-------------------------------------------------------------------------\n');
-
 console.log('Задание 9\n');
 
-// Первый массив чисел
-let firstSet = [3, 7, 1, 9, 4];
-// Второй массив чисел
-let secondSet = [6, 2, 8, 5, 7];
-// Объединяем массивы и сортируем по возрастанию
-let combined = firstSet.concat(secondSet).sort((x, y) => x - y);
-// Находим индекс среднего элемента
-let middleIndex = Math.floor(combined.length / 2);
-// Вычисляем медиану в зависимости от четности длины
-let medianValue = combined.length % 2 === 0 
-	? (combined[middleIndex - 1] + combined[middleIndex]) / 2 
-	: combined[middleIndex];
-// Вывод результатов
-console.log('Объединенный массив:', combined);
-console.log('Медиана:', medianValue);
+// Функция-конструктор для сотрудника
+function Worker(name, dept, phone, salary) {
+	this.name = name;
+	this.dept = dept;
+	this.phone = phone;
+	this.salary = salary;
+	this.show = function() {
+		console.log(`Имя: ${this.name}`);
+		console.log(`Отдел: ${this.dept}`);
+		console.log(`Телефон: ${this.phone}`);
+		console.log(`Зарплата: ${this.salary}`);
+	};
+}
+let worker1 = new Worker('Анна', 'Бухгалтерия', '8-965-458-89-12', 950500);
+worker1.show();
 
 console.log('\n-------------------------------------------------------------------------\n');
-
 console.log('Задание 10\n');
 
-// Создаем массив из 12 случайных чисел от -25 до 25
-let randomArray = Array.from({ length: 12 }, () => Math.floor(Math.random() * 51) - 25);
-console.log('Исходный массив:', randomArray);
-
-// Находим минимальное и максимальное значения
-let minValue = Math.min(...randomArray);
-let maxValue = Math.max(...randomArray);
-// Находим их индексы
-let minPosition = randomArray.indexOf(minValue);
-let maxPosition = randomArray.indexOf(maxValue);
-
-// Меняем местами минимальный и максимальный элементы
-[randomArray[minPosition], randomArray[maxPosition]] = [randomArray[maxPosition], randomArray[minPosition]];
-console.log('После замены:', randomArray);
+// Функция-конструктор калькулятора
+function SimpleCalc() {
+	this.a = 0;
+	this.b = 0;
+	this.read = function(a, b) {
+		this.a = a;
+		this.b = b;
+	};
+	this.sum = function() {
+		return this.a + this.b;
+	};
+	this.mul = function() {
+		return this.a * this.b;
+	};
+}
+let myCalc = new SimpleCalc();
+myCalc.read(7, 8);
+console.log('7 + 8 =', myCalc.sum());
+console.log('7 * 8 =', myCalc.mul());
 
 console.log('\n-------------------------------------------------------------------------\n');
-
 console.log('Задание 11\n');
 
-// Массив для проверки упорядоченности по убыванию
-let testArray = [15, 12, 10, 8, 6, 4];
-let isDescending = true;
-let firstBadIndex = -1;
-
-// Проверяем, упорядочен ли массив по убыванию
-for (let i = 1; i < testArray.length; i++) {
-	// Если текущий элемент больше предыдущего - порядок нарушен
-	if (testArray[i] > testArray[i - 1]) {
-		isDescending = false;
-		firstBadIndex = i;
-		break;
-	}
+// Функция-конструктор аккумулятора
+function Counter(start) {
+	this.value = start; // текущее значение
+	this.read = function(x) {
+		this.value += x; // добавляем число
+	};
 }
-
-// Если массив упорядочен по убыванию
-if (isDescending) {
-	let reversedArray = [];
-	// Создаем массив в обратном порядке
-	for (let i = testArray.length - 1; i >= 0; i--) {
-		reversedArray.push(testArray[i]);
-	}
-	console.log('Массив в обратном порядке:', reversedArray);
-} else {
-	// Иначе выводим индекс первого нарушающего элемента
-	console.log('Индекс первого нарушающего элемента:', firstBadIndex);
-}
+let counter = new Counter(3);
+counter.read(7);
+counter.read(4);
+console.log('Результат:', counter.value);
 
 console.log('\n-------------------------------------------------------------------------\n');
 
-console.log('Задание 12\n');
 
-// Исходный массив с положительными и отрицательными числами
-let numbers5 = [7, -3, 9, -4, 12, -6, 15, -8, 18, -10, 21, -12];
-console.log('Исходный массив:', numbers5);
 
-// Преобразование элементов по условию
-for (let i = 0; i < numbers5.length; i++) {
-	// Положительные элементы с нечетными индексами умножаем на 3
-	if (numbers5[i] > 0 && i % 2 === 1) {
-		numbers5[i] = numbers5[i] * 3;
-	} 
-	// Отрицательные элементы с четными индексами делим на 5
-	else if (numbers5[i] < 0 && i % 2 === 0) {
-		numbers5[i] = numbers5[i] / 5;
-	}
-}
-console.log('После преобразований:', numbers5);
 
+
+// Работа с прототипами
 console.log('\n-------------------------------------------------------------------------\n');
+console.log('Работа с прототипами\n');
+console.log('Задание 1\n');
 
-console.log('Задание 13\n');
-
-// Создаем матрицу 5x5
-let matrix5x5 = [
-	[3, -7, 9, 2, 11],
-	[8, -4, 1, 13, 4],
-	[10, 5, -3, 7, -9],
-	[6, 12, -5, 8, 3],
-	[-2, 14, -8, 15, 16],
-];
-
-console.log('Элементы в интервале [-5; 7]:');
-// Перебираем все строки матрицы
-for (let row = 0; row < matrix5x5.length; row++) {
-	// Перебираем все столбцы текущей строки
-	for (let col = 0; col < matrix5x5[row].length; col++) {
-		// Проверяем, принадлежит ли элемент интервалу [-5; 7]
-		if (matrix5x5[row][col] >= -5 && matrix5x5[row][col] <= 7) {
-			console.log(`matrix[${row}][${col}] = ${matrix5x5[row][col]}`);
-		}
-	}
-}
-
-console.log('\n-------------------------------------------------------------------------\n');
-
-console.log('Задание 14\n');
-
-// Создаем матрицу размером M×N
-let matrixMN = [
-	[5, 2, 8, 3],
-	[7, 4, 6, 9],
-	[10, 1, 12, 11],
-];
-
-let sumOfRowMaxs = 0;
-// Находим сумму наибольших элементов строк
-for (let i = 0; i < matrixMN.length; i++) {
-	// Находим максимум в текущей строке
-	let rowMax = Math.max(...matrixMN[i]);
-	sumOfRowMaxs += rowMax;
-	console.log(`Максимум в строке ${i}: ${rowMax}`);
-}
-
-// Определяем количество столбцов
-let numberOfColumns = matrixMN[0].length;
-let productOfColMins = 1;
-// Находим произведение наименьших элементов столбцов
-for (let j = 0; j < numberOfColumns; j++) {
-	// Инициализируем минимум первым элементом столбца
-	let colMin = matrixMN[0][j];
-	// Ищем минимум в текущем столбце
-	for (let i = 1; i < matrixMN.length; i++) {
-		if (matrixMN[i][j] < colMin) {
-			colMin = matrixMN[i][j];
-		}
-	}
-	// Умножаем на найденный минимум
-	productOfColMins *= colMin;
-	console.log(`Минимум в столбце ${j}: ${colMin}`);
-}
-
-// Вывод результатов
-console.log('Сумма максимумов строк:', sumOfRowMaxs);
-console.log('Произведение минимумов столбцов:', productOfColMins);
-
-console.log('\n-------------------------------------------------------------------------\n');
-
-console.log('Задание 15\n');
-
-// Создаем ассоциативный массив (объект) с книгами по авторам
-let authorBooks = {
-	'Толстой': ['Война и мир', 'Анна Каренина', 'Детство'],
-	'Достоевский': ['Преступление и наказание', 'Идиот', 'Братья Карамазовы'],
-	'Булгаков': ['Мастер и Маргарита', 'Собачье сердце', 'Белая гвардия'],
+// Создаем два объекта с прототипным наследованием
+let animal = {
+    jumps: null
+};
+let rabbit = {
+    __proto__: animal,
+    jumps: true
 };
 
-console.log('Книги по авторам:');
-// Перебираем всех авторов в объекте
-for (let authorName in authorBooks) {
-	console.log(`\n${authorName}:`);
-	// Получаем массив книг текущего автора
-	let bookList = authorBooks[authorName];
-	// Выводим каждую книгу с новой строки
-	for (let i = 0; i < bookList.length; i++) {
-		console.log(`  - ${bookList[i]}`);
-	}
+// Свойство jumps есть в самом объекте rabbit
+// Теперь свойство берется из прототипа animal
+
+console.log(rabbit.jumps); // true
+delete rabbit.jumps;
+console.log(rabbit.jumps); // null
+delete animal.jumps;
+console.log(rabbit.jumps); // undefined
+
+console.log('\n-------------------------------------------------------------------------\n');
+console.log('Задание 2\n');
+
+let animal2 = {
+    eat() {
+        this.full = true; // this указывает на объект перед точкой
+    }
+};
+let rabbit2 = {
+    __proto__: animal2
+};
+rabbit2.eat();
+
+// Свойство full добавляется в rabbit2, а не в animal2
+console.log('rabbit2.full:', rabbit2.full); // true
+console.log('animal2.full:', animal2.full); // undefined
+// Проверяем, что свойство принадлежит именно rabbit2
+console.log('Свойство в rabbit2:', rabbit2.hasOwnProperty('full')); // true
+
+console.log('\n-------------------------------------------------------------------------\n');
+console.log('Задание 3\n');
+
+let hamsterBad = {
+    stomach: [], // Один массив на всех
+    eat(food) {
+        this.stomach.push(food);
+    }
+};
+
+let speedyBad = {
+    __proto__: hamsterBad
+};
+let lazyBad = {
+    __proto__: hamsterBad
+};
+
+speedyBad.eat('apple');
+console.log('Проблема: speedy ->', speedyBad.stomach); // ['apple']
+console.log('Проблема: lazy ->', lazyBad.stomach); // тоже ['apple']
+
+// У каждого хомяка свой stomach
+let hamster = {
+    eat(food) {
+        this.stomach.push(food); // this.stomach должен быть у каждого свой
+    }
+};
+
+let speedy = {
+    __proto__: hamster,
+    stomach: [] // свой собственный массив
+};
+let lazy = {
+    __proto__: hamster,
+    stomach: [] // свой собственный массив
+};
+
+speedy.eat('apple');
+console.log('Исправлено: speedy ->', speedy.stomach); // ['apple']
+console.log('Исправлено: lazy ->', lazy.stomach); // []
+
+console.log('\n-------------------------------------------------------------------------\n');
+console.log('Задание 4\n');
+
+// Добавляем свойства и методы в прототип String
+String.prototype.color = 'black';
+String.prototype.size = '14px';
+String.prototype.write = function() {
+    console.log('Цвет текста: ' + this.color);
+    console.log('Размер шрифта: ' + this.size);
+    console.log('Текст: ' + this.toString());
+};
+
+// Создаем строку и меняем её свойства
+let str1 = new String('Это первая строка');
+str1.color = 'red';
+str1.size = '18px';
+str1.write();
+
+// Вторая строка использует значения по умолчанию
+let str2 = new String('Это вторая строка');
+str2.write();
+
+console.log('\n-------------------------------------------------------------------------\n');
+console.log('Задание 5\n');
+
+function Rabbit() {}
+Rabbit.prototype = {
+    eats: true
+};
+
+let rabbit3 = new Rabbit();
+console.log('Изначально:', rabbit3.eats); // true
+
+// Замена прототипа
+let r1 = new Rabbit();
+Rabbit.prototype = {};
+console.log('Случай 1 (новый прототип):', r1.eats); // true - старый объект сохраняет ссылку на старый прототип
+
+// Изменение свойства в прототипе
+let r2 = new Rabbit();
+Rabbit.prototype.eats = false;
+console.log('Случай 2 (изменение свойства):', r2.eats); // false - прототип тот же, свойство изменилось
+
+// Удаление свойства у объекта
+let r3 = new Rabbit();
+delete r3.eats;
+console.log('Случай 3 (удаление у объекта):', r3.eats); // true - удалили только у объекта, в прототипе осталось
+
+// Удаление свойства из прототипа
+let r4 = new Rabbit();
+delete Rabbit.prototype.eats;
+console.log('Случай 4 (удаление из прототипа):', r4.eats); // undefined - свойство удалено из прототипа
+
+console.log('\n-------------------------------------------------------------------------\n');
+console.log('Объяснение:');
+console.log('1. При замене прототипа (Rabbit.prototype = {}) старые объекты продолжают ссылаться на старый прототип');
+console.log('2. Изменение свойства в прототипе влияет на все объекты');
+console.log('3. delete работает только с собственными свойствами объекта');
+console.log('4. Удаление свойства из прототипа делает его недоступным для всех наследующих объектов');
+
+
+
+
+
+// Классы
+console.log('\n-------------------------------------------------------------------------\n');
+console.log('Классы\n');
+console.log('Задание 1\n');
+
+class Clock {
+    constructor(hours, minutes, seconds) {
+        this.hours = hours;
+        this.minutes = minutes;
+        this.seconds = seconds;
+    }
+    
+    display() {
+        // Форматируем время с ведущими нулями
+        let h = this.hours < 10 ? '0' + this.hours : this.hours;
+        let m = this.minutes < 10 ? '0' + this.minutes : this.minutes;
+        let s = this.seconds < 10 ? '0' + this.seconds : this.seconds;
+        console.log(`${h}:${m}:${s}`);
+    }
 }
+
+let myClock = new Clock(14, 30, 45);
+myClock.display();
+
+console.log('\n-------------------------------------------------------------------------\n');
+console.log('Задание 2\n');
+
+class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+}
+
+class Rabbit extends Animal {
+    constructor(name) {
+        // В конструкторе наследника нужно сначала вызвать super()
+        super(name); // передаем name в родительский конструктор
+        this.created = Date.now(); // потом добавляем свои свойства
+    }
+}
+
+let whiteRabbit = new Rabbit("Белый кролик");
+console.log(rabbit.name);
+console.log('Создан:', new Date(whiteRabbit.created).toLocaleTimeString());
+
+console.log('\n-------------------------------------------------------------------------\n');
+console.log('Задание 3\n');
+
+class BaseClock {
+    constructor(template) {
+        this.template = template;
+    }
+
+    render() {
+        let date = new Date();
+
+        let hours = date.getHours();
+        if (hours < 10) hours = '0' + hours;
+
+        let mins = date.getMinutes();
+        if (mins < 10) mins = '0' + mins;
+
+        let secs = date.getSeconds();
+        if (secs < 10) secs = '0' + secs;
+
+        let output = this.template
+            .replace('h', hours)
+            .replace('m', mins)
+            .replace('s', secs);
+
+        console.log(output);
+    }
+
+    stop() {
+        clearInterval(this.timer);
+    }
+
+    start() {
+        this.render();
+        this.timer = setInterval(() => this.render(), 1000);
+    }
+}
+
+// Наследуемся и добавляем параметр precision
+class AdvancedClock extends BaseClock {
+    constructor(template, precision = 1000) {
+        super(template); // вызываем конструктор родителя
+        this.precision = precision; // добавляем свою настройку
+    }
+    
+    // Переопределяем метод start с учетом precision
+    start() {
+        this.render();
+        this.timer = setInterval(() => this.render(), this.precision);
+    }
+}
+
+// Создаем часы с обновлением каждые 500 мс
+let preciseClock = new AdvancedClock('h:m:s', 500);
+console.log('Часы запущены (остановятся через 2 секунды):');
+preciseClock.start();
+
+// Останавливаем через 2 секунды
+setTimeout(() => {
+    preciseClock.stop();
+    console.log('Часы остановлены');
+}, 2000);
+
+console.log('\n-------------------------------------------------------------------------\n');
+console.log('Задание 4\n');
+
+class Warehouse {
+    constructor() {
+        this.nextId = 0; // следующий серийный номер
+        this.items = new Map(); // хранилище коробок
+    }
+    
+    // Добавить коробку на склад
+    add(weight, volume) {
+        let id = this.nextId++;
+        this.items.set(id, { id, weight, volume });
+        console.log(`Добавлена коробка #${id}: вес=${weight}, объем=${volume}`);
+        return id;
+    }
+    
+    // Найти коробку по минимальному весу
+    findByWeight(minWeight) {
+        return this.findBox('weight', minWeight);
+    }
+    
+    // Найти коробку по минимальному объему
+    findByVolume(minVolume) {
+        return this.findBox('volume', minVolume);
+    }
+    
+    // Общий метод поиска и удаления коробки
+    findBox(property, minValue) {
+        let bestBox = null;
+        
+        // Ищем подходящую коробку
+        for (let box of this.items.values()) {
+            if (box[property] >= minValue) {
+                // Если еще не нашли или нашли лучше
+                if (bestBox === null) {
+                    bestBox = box;
+                } else {
+                    // Сравниваем по значению свойства и по времени (серийному номеру)
+                    if (box[property] < bestBox[property]) {
+                        bestBox = box; // меньшее значение лучше
+                    } else if (box[property] === bestBox[property] && box.id > bestBox.id) {
+                        bestBox = box; // если равны, берем более старую (меньше id)
+                    }
+                }
+            }
+        }
+        
+        // Если ничего не нашли
+        if (bestBox === null) {
+            console.log(`Коробка с ${property} >= ${minValue} не найдена`);
+            return -1;
+        }
+        
+        // Удаляем коробку со склада
+        this.items.delete(bestBox.id);
+        console.log(`Выдана коробка #${bestBox.id}: ${property}=${bestBox[property]}`);
+        return bestBox.id;
+    }
+}
+
+// Тестируем работу склада
+let warehouse = new Warehouse();
+
+// Добавляем коробки
+console.log('\n--- Добавление коробок ---');
+warehouse.add(10, 100); // #0
+warehouse.add(8, 120);  // #1
+warehouse.add(12, 90);  // #2
+warehouse.add(10, 140); // #3
+warehouse.add(15, 80);  // #4
+
+console.log('\n--- Поиск по весу ---');
+console.log('Ищем коробку с весом >= 9');
+let box1 = warehouse.findByWeight(9); // должна быть #1 (вес 8? нет, 8<9, значит #0 вес 10)
+console.log('Найдена:', box1);
+
+console.log('\n--- Поиск по объему ---');
+console.log('Ищем коробку с объемом >= 100');
+let box2 = warehouse.findByVolume(100); // должна быть #3 (объем 140)
+console.log('Найдена:', box2);
+
+console.log('\n--- Поиск несуществующей коробки ---');
+console.log('Ищем коробку с весом >= 20');
+let box3 = warehouse.findByWeight(20); // -1
+console.log('Результат:', box3);
+
+console.log('\n--- Остаток на складе ---');
+console.log('Осталось коробок:', warehouse.items.size);
 
 console.log('\n-------------------------------------------------------------------------\n');
