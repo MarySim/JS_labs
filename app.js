@@ -2,279 +2,336 @@
 
 console.log('\n-------------------------------------------------------------------------\n');
 console.log('Задание 1\n');
-let promise = new Promise(function(resolve, reject) {
-  resolve(1);
-  setTimeout(() => resolve(2), 1000);
-});
-promise.then(console.log);
-
-// Задание 2
-
-console.log('\n-------------------------------------------------------------------------\n');
-console.log('Задание 2\n');
-// 1. Модифицированные функции, которые теперь возвращают Promise
-function readConfig(name) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            console.log(`(1) config from ${name} loaded`);
-            resolve(); // Сигнализируем об успешном выполнении промиса
-        }, Math.floor(Math.random() * 1000));
-    });
+// а) Вычисление sin(x)
+function calculateSin() {
+    let input = prompt("Введите значение x (в радианах):"); [cite, 40]
+    let x = parseFloat(input);
+    
+    if (isNaN(x)) {
+        alert("Ошибка: введено не число!");
+    } else {
+        alert(`Синус ${x} равен: ` + Math.sin(x)); [cite, 40]
+    }
 }
 
-function doQuery(statement) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            console.log(`(2) SQL query executed: ${statement}`);
-            resolve();
-        }, Math.floor(Math.random() * 1000));
-    });
+// б) Проверка попадания точки в квадрат
+function isPointInSquare() {
+    alert("Задайте квадрат противоположными вершинами (x1, y1) и (x2, y2):"); [cite, 41]
+    let x1 = parseFloat(prompt("x1:"));
+    let y1 = parseFloat(prompt("y1:"));
+    let x2 = parseFloat(prompt("x2:"));
+    let y2 = parseFloat(prompt("y2:"));
+    
+    let px = parseFloat(prompt("Введите x искомой точки:")); [cite, 42]
+    let py = parseFloat(prompt("Введите y искомой точки:")); [cite, 42]
+    
+    // Находим границы квадрата, так как вершины могут быть введены в любом порядке
+    let minX = Math.min(x1, x2);
+    let maxX = Math.max(x1, x2);
+    let minY = Math.min(y1, y2);
+    let maxY = Math.max(y1, y2);
+    
+    if (px >= minX && px <= maxX && py >= minY && py <= maxY) {
+        alert("Точка принадлежит квадрату"); [cite, 42]
+    } else {
+        alert("Точка НЕ принадлежит квадрату"); [cite, 42]
+    }
 }
 
-function httpGet(url) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            console.log(`(3) Page retrieved: ${url}`);
-            resolve();
-        }, Math.floor(Math.random() * 1000));
-    });
+// б) Проверка попадания точки в квадрат
+function isPointInSquare() {
+    alert("Задайте квадрат противоположными вершинами (x1, y1) и (x2, y2):"); [cite, 41]
+    let x1 = parseFloat(prompt("x1:"));
+    let y1 = parseFloat(prompt("y1:"));
+    let x2 = parseFloat(prompt("x2:"));
+    let y2 = parseFloat(prompt("y2:"));
+    
+    let px = parseFloat(prompt("Введите x искомой точки:")); [cite, 42]
+    let py = parseFloat(prompt("Введите y искомой точки:")); [cite, 42]
+    
+    // Находим границы квадрата, так как вершины могут быть введены в любом порядке
+    let minX = Math.min(x1, x2);
+    let maxX = Math.max(x1, x2);
+    let minY = Math.min(y1, y2);
+    let maxY = Math.max(y1, y2);
+    
+    if (px >= minX && px <= maxX && py >= minY && py <= maxY) {
+        alert("Точка принадлежит квадрату"); [cite, 42]
+    } else {
+        alert("Точка НЕ принадлежит квадрату"); [cite, 42]
+    }
 }
 
-function readFile(path) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            console.log(`(4) Readme file from ${path} loaded`);
-            resolve();
-        }, Math.floor(Math.random() * 1000));
-    });
+// в) Представление числа в виде суммы двух квадратов
+function sumOfTwoSquares() {
+    let num = parseInt(prompt("Введите натуральное число:")); [cite, 43]
+    let found = false;
+    let resultStr = "";
+
+    // Оптимальный перебор до квадратного корня из num
+    for (let a = 1; a * a < num; a++) {
+        let b2 = num - a * a;
+        let b = Math.sqrt(b2);
+        if (Number.isInteger(b) && b >= 1) {
+            resultStr = `${num} = ${a}^2 + ${b}^2`;
+            found = true;
+            break; // Нашли первую пару — выходим
+        }
+    }
+
+    if (found) {
+        alert(`Можно представить: ${resultStr}`); [cite, 43]
+    } else {
+        alert("Нельзя представить в виде суммы двух квадратов натуральных чисел"); [cite, 43]
+    }
 }
 
-// 2. Вызов функций в строгой последовательности с помощью цепочки .then()
-console.log('start');
+// г) Валидация Email
+function checkEmail() {
+    let email = prompt("Введите ваш email:"); [cite, 44]
+    if (!email.includes('@')) {
+        alert("Предупреждение: адрес электронной почты должен содержать символ '@'!"); [cite, 44]
+    } else {
+        alert("Email введен корректно.");
+    }
+}
 
-readConfig('myConfig')
-    .then(() => {
-        // Возвращаем следующий промис, чтобы продолжить цепочку
-        return doQuery('select * from cities');
-    })
-    .then(() => {
-        return httpGet('http://google.com');
-    })
-    .then(() => {
-        return readFile('README.md');
-    })
-    .then(() => {
-        console.log('It is done!');
-        console.log('end');
-    })
-    .catch((error) => {
-        console.error('Произошла ошибка в цепочке:', error);
-    });
+// д) Доля латинских букв в строке 
+function latinPercentage() {
+    let str = prompt("Введите строку:"); [cite, 45]
+    if (!str) return alert("Строка пуста");
+
+    // Ищем все латинские буквы (регистронезависимо)
+    let matches = str.match(/[a-z]/gi);
+    let count = matches ? matches.length : 0;
+    let percentage = (count / str.length) * 100;
+
+    alert(`Доля латинских букв: ${percentage.toFixed(2)}%`); [cite, 45]
+}
+
+// е) Удаление дубликатов слов
+function removeDuplicateWords() {
+    let str = prompt("Введите строку из слов:"); [cite, 46]
+    // Разделяем строку по одному или нескольким пробелам
+    let words = str.trim().split(/\s+/); [cite, 46]
+    
+    // Используем Set для сохранения только уникальных элементов
+    let uniqueWords = [...new Set(words)];
+    
+    alert("Результат: " + uniqueWords.join(" ")); [cite, 47]
+}
+
+// ж) Вывод массива задом наперед по 5 элементов
+function processArray() {
+    let n = parseInt(prompt("Введите размер массива n:")); [cite, 48]
+    let arr = [];
+    for (let i = 0; i < n; i++) {
+        arr.push(Math.floor(Math.random() * 100)); // Случайные числа от 0 до 99
+    }
+    
+    console.log("Исходный массив:", arr);
+    
+    // Переворачиваем массив
+    let reversed = arr.reverse();
+    console.log("Вывод в обратном порядке по 5 чисел:"); [cite, 48]
+    
+    for (let i = 0; i < reversed.length; i += 5) {
+        // Берем срез по 5 элементов
+        let chunk = reversed.slice(i, i + 5);
+        console.log(chunk.join(" ")); [cite, 48]
+    }
+}
+
+// з) Матрица и обнуление диагоналей
+function processMatrix() {
+    let n = parseInt(prompt("Введите порядок матрицы n:")); [cite, 49]
+    let matrix = [];
+    
+    // Заполнение случайными числами
+    for (let i = 0; i < n; i++) {
+        matrix[i] = [];
+        for (let j = 0; j < n; j++) {
+            matrix[i][j] = Math.floor(Math.random() * 90) + 10; // Двузначные числа
+        }
+    }
+    console.log("Исходная матрица:", JSON.parse(JSON.stringify(matrix)));
+
+    let diagElements = [];
+    
+    // Собираем координаты и значения элементов на диагоналях
+    for (let i = 0; i < n; i++) {
+        // Главная диагональ: i === j
+        diagElements.push({ r: i, c: i, val: matrix[i][i] });
+        // Побочная диагональ: j === n - 1 - i
+        if (i !== n - 1 - i) { // Избегаем дублирования центрального элемента в нечетных матрицах
+            diagElements.push({ r: i, c: n - 1 - i, val: matrix[i][n - 1 - i] });
+        }
+    }
+
+    // Находим глобальный максимум и минимум среди диагональных элементов
+    let values = diagElements.map(el => el.val);
+    let maxVal = Math.max(...values);
+    let minVal = Math.min(...values);
+
+    // Заменяем нулями все элементы диагоналей, кроме max и min
+    for (let el of diagElements) {
+        if (el.val !== maxVal && el.val !== minVal) {
+            matrix[el.r][el.c] = 0; [cite, 50]
+        }
+    }
+
+    console.log("Матрица после обработки:", matrix);
+}
+
+// и) Прибавление дней к текущей дате
+function addDays() {
+    let d = parseInt(prompt("Введите количество дней для добавления:")); [cite, 51]
+    let date = new Date();
+    
+    // Прибавляем дни к текущему дню месяца
+    date.setDate(date.getDate() + d); [cite, 51]
+    
+    alert("Новая дата: " + date.toLocaleDateString("ru-RU")); [cite, 51]
+}
+
+// ј) Сколько месяцев осталось до 1 сентября
+function monthsToSeptember() {
+    let now = new Date();
+    let currentMonth = now.getMonth(); // 0 - Январь, 11 - Декабрь
+    let targetMonth = 8; // Сентябрь имеет индекс 8
+    
+    let diff = targetMonth - currentMonth;
+    
+    if (diff < 0) {
+        // Если сентябрь в этом году уже прошел, считаем до сентября следующего года
+        diff += 12;
+    }
+    
+    alert(`До 1 сентября осталось месяцев: ${diff}`); [cite, 52]
+}
 
 // Задание 3
 
 console.log('\n-------------------------------------------------------------------------\n');
 console.log('Задание 3\n');
-// Иммитируем асинхронные математические функции fi(x), возвращающие Promise
-const f1 = (x) => new Promise(res => setTimeout(() => res(x * x), 200));  
-const f2 = (x) => new Promise(res => setTimeout(() => res(2 * x), 200));  
-const f3 = (x) => new Promise(res => setTimeout(() => res(-2), 200));   
-const f4 = (x) => new Promise(res => setTimeout(() => res(x), 200));     
-const f5 = (x) => new Promise(res => setTimeout(() => res(5), 200));  
-const f6 = (x) => new Promise(res => setTimeout(() => res(-x), 200));    
-// Универсальная функция для последовательного вычисления F(x) с помощью цепочки Promise
-function calculateF(x, functionsArray) {
+let divElement = document.querySelector('div');
 
-    let currentPromise = Promise.resolve(0);
+let ulElement = document.querySelector('ul');
 
-    functionsArray.forEach((f, index) => {
-        // Наслаиваем цепочку .then()
-        currentPromise = currentPromise.then((intermediateResult) => {
-            // Вызываем текущую асинхронную функцию
-            return f(x).then((value) => {
-                let newResult = intermediateResult + value;
-                console.log(`  f${index + 1} дает значение ${value}, промежуточный результат ${newResult}`);
-                return newResult; // передаем обновленный результат на следующую итерацию
-            });
-        });
-    });
+let peteElement = document.querySelectorAll('li')[1]; 
 
-    return currentPromise;
-}
-
-const xValue = 3;
-
-console.log(`--- Тест А: n = 2 ---`);
-calculateF(xValue, [f1, f2])
-    .then(finalAnswer => {
-        console.log(`Итоговый ответ для F(x) при n=2: ${finalAnswer}\n`);
-        
-        console.log(`--- Тест B: n = 4 ---`);
-        return calculateF(xValue, [f1, f2, f3, f4]);
-    })
-    .then(finalAnswer => {
-        console.log(`Итоговый ответ для F(x) при n=4: ${finalAnswer}\n`);
-        
-        console.log(`--- Тест C: n = 6 ---`);
-        return calculateF(xValue, [f1, f2, f3, f4, f5, f6]);
-    })
-    .then(finalAnswer => {
-        console.log(`Итоговый ответ для F(x) при n=6: ${finalAnswer}\n`);
-    });
+let peteAlt = document.querySelector('ul').lastElementChild;
 
 // Задание 4
 
 console.log('\n-------------------------------------------------------------------------\n');
 console.log('Задание 4\n');
-function addNumbersPromise(a, b) {
-    return new Promise((resolve, reject) => {
-        // Проверка типов аргументов на Number
-        if (typeof a !== 'number' || typeof b !== 'number' || isNaN(a) || isNaN(b)) {
-            return reject(new Error("Отклонено: Оба аргумента должны быть числами"));
-        }
+let table = document.getElementById('age-table'); 
 
-        let currentSum = a;
-        let iteration = 0;
-        
-        console.log(`--- Старт Promise: база=${a}, слагаемое=${b} ---`);
+let labels = table.querySelectorAll('label');
 
-        // Запускаем интервал каждые 2 секунды
-        const intervalId = setInterval(() => {
-            iteration++;
-            currentSum += b;
-            
-            // Вывод суммы и итерации в консол
-            console.log(`[Promise] Итерация ${iteration}: сумма = ${currentSum}`);
+let firstTd = table.querySelector('td');
 
-            if (iteration === 5) {
-                clearInterval(intervalId);
-                resolve(currentSum);
-            }
-        }, 2000);
-    });
-}
+let searchForm = document.querySelector('form[name="search"]');
 
-// Демонстрация успешного выполнения
-addNumbersPromise(10, 5)
-    .then(result => console.log(`[Promise] Итог: ${result}`))
-    .catch(error => console.error(error.message));
+let firstInput = searchForm.querySelector('input');
 
-// Демонстрация вызова ошибки
-addNumbersPromise(10, 'пять')
-    .then(result => console.log(result))
-    .catch(error => console.error(error.message));
+let inputs = searchForm.querySelectorAll('input');
+let lastInput = inputs[inputs.length - 1];
 
 // Задание 5
 
 console.log('\n-------------------------------------------------------------------------\n');
 console.log('Задание 5\n');
-// Вспомогательная функция задержки
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-async function addNumbersAsync(a, b) {
-    if (typeof a !== 'number' || typeof b !== 'number' || isNaN(a) || isNaN(b)) {
-        throw new Error("Отклонено: Оба аргумента должны быть числами");
-    }
-
-    let currentSum = a;
-    console.log(`--- Старт async/await: база=${a}, слагаемое=${b} ---`);
-
-    for (let i = 1; i <= 5; i++) {
-        await sleep(2000); // приостанавливаем выполнение цикла на 2 сек
-        currentSum += b;
-        console.log(`[Async] Итерация ${i}: сумма = ${currentSum}`);
-    }
-
-    return currentSum; // В async функциях return автоматически оборачивается в resolve()
+function colorEvenCells() {
+    let cells = document.querySelectorAll('table td');
+    
+    cells.forEach(cell => {
+        // Извлекаем текст вида "1:2" и разносим в переменные
+        let [i, j] = cell.textContent.split(':').map(Number);
+        
+        // Проверяем сумму на четность
+        if ((i + j) % 2 === 0) {
+            cell.style.backgroundColor = 'red'; [cite, 60]
+        }
+    });
 }
 
-async function demoAsync() {
-    try {
-        const result = await addNumbersAsync(20, 10);
-        console.log(`[Async] Итог: ${result}`);
-    } catch (error) {
-        console.error(error.message);
-    }
-
-    try {
-        await addNumbersAsync(20, null);
-    } catch (error) {
-        console.error(error.message);
-    }
-}
-
-demoAsync();
+colorEvenCells();
 
 // Задание 6
 
 console.log('\n-------------------------------------------------------------------------\n');
 console.log('Задание 6\n');
-async function wait() {
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  return 10;
+function styleExternalLinks() {
+    let links = document.querySelectorAll('a');
+    
+    links.forEach(link => {
+        let href = link.getAttribute('href');
+        
+        // Проверяем условия: href существует, содержит '://' и НЕ начинается с указанного адреса
+        if (href && href.includes('://') && !href.startsWith('http://internal.com')) { [cite, 61, 62]
+            link.style.color = 'orange'; [cite, 60, 63]
+        }
+    });
 }
 
-function f() {
-  // Вызываем wait(), который возвращает Promise, и используем метод .then(), чтобы получить результат
-  wait().then(result => {
-      console.log(result); // Выведет 10 через 1 секунду
-  });
-}
-
-f();
+styleExternalLinks();
 
 // Задание 7
 
 console.log('\n-------------------------------------------------------------------------\n');
 console.log('Задание 7\n');
-const delay = (timeUnits) => new Promise(resolve => setTimeout(resolve, timeUnits * 100));
-
-async function processCandidate(candidateData) {
-    // Деструктурируем массив для удобства
-    const [name, prep1, def1, prep2, def2] = candidateData;
-
-    // ЗАДАНИЕ 1
-    console.log('\n-------------------------------------------------------------------------\n');
-    console.log('Первое\n');
-    console.log(`${name} started the 1 task.`);
-    await delay(prep1); // подготовка 1
-    
-    console.log(`${name} moved on to the defense of the 1 task.`);
-    await delay(def1); // защита 1
-    
-    console.log(`${name} completed the 1 task.`);
-
-    // ОТДЫХ
-    console.log('\n-------------------------------------------------------------------------\n');
-    console.log('Отдых\n');
-    console.log(`${name} is resting.`);
-    await delay(5); // фиксированный отдых 5 единиц времени
-
-    // ЗАДАНИЕ 2
-    console.log('\n-------------------------------------------------------------------------\n');
-    console.log('Второе\n');
-    // Второе задание начинается строго после отдыха
-    console.log(`${name} started the 2 task.`);
-    await delay(prep2);
-    
-    console.log(`${name} moved on to the defense of the 2 task.`);
-    await delay(def2);
-    
-    console.log(`${name} completed the 2 task.`);
+function clear(elem) {
+    elem.innerHTML = '';
 }
 
-async function interviews(candidates) {
-    // Запускаем обработку каждого кандидата параллельно
-    // map создаст массив промисов, которые начнут выполняться одновременно
-    const interviewPromises = candidates.map(candidate => processCandidate(candidate));
+// clear(document.getElementById('list'));
 
-    await Promise.all(interviewPromises);
+// Задание 9
+
+console.log('\n-------------------------------------------------------------------------\n');
+console.log('Задание 9\n');
+const firstNames = ["Иван", "Алексей", "Сергей", "Михаил", "Дмитрий", "Петр"]; [cite, 74]
+const lastNames = ["Иванов", "Петров", "Сидоров", "Смирнов", "Кузнецов", "Попов"]; [cite, 74]
+
+function getRandomName() {
+    let randomFirst = firstNames[Math.floor(Math.random() * firstNames.length)];
+    let randomLast = lastNames[Math.floor(Math.random() * lastNames.length)];
+    return `${randomFirst} ${randomLast}`; [cite, 74]
 }
 
-const candidates = [
-    ['Ivan', 5, 2, 7, 2], 
-    ['John', 3, 4, 5, 1], 
-    ['Sophia', 4, 2, 5, 1]
-];
+function startCardGeneration() {
+    let container = document.querySelector('.container') || document.body;
+    let cardCount = 0;
 
-interviews(candidates);
+    let intervalId = setInterval(() => { [cite, 71]
+        cardCount++;
+
+        let card = document.createElement('div');
+        card.className = 'card';
+
+        let img = document.createElement('img');
+        img.src = `https://thispersondoesnotexist.com/?${cardCount}`; [cite, 73]
+        img.alt = 'User Photo';
+
+        let nameTitle = document.createElement('h3');
+        nameTitle.textContent = getRandomName();
+
+        // Собираем карточку воедино
+        card.appendChild(img);
+        card.appendChild(nameTitle);
+
+        // Добавляем готовую карточку на страницу
+        container.appendChild(card);
+
+        console.log(`Карточка №${cardCount} успешно добавлена.`);
+
+        if (cardCount === 6) { [cite, 70]
+            clearInterval(intervalId); // Деактивируем таймер 
+            console.log("Генерация карточек завершена.");
+        }
+    }, 2000);
+}
+
+startCardGeneration();
