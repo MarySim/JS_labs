@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Петров Иван</title>
+</head>
+<body>
+    <form id="salaryForm">
+        <h3>Введите начисленную зарплату за следующие месяцы</h3>
+        
+        <label>Январь:</label> <input type="number" id="m1" value="300"><br><br>
+        <label>Февраль:</label> <input type="number" id="m2" value="200"><br><br>
+        <label>Март:</label> <input type="number" id="m3" value="500"><br><br>
+        <label>Апрель:</label> <input type="number" id="m4" value="250"><br><br>
+        <label>Май:</label> <input type="number" id="m5" value="350"><br><br>
+        <label>Июнь:</label> <input type="number" id="m6" value="500"><br><br>
+        
+        <label><b>Средняя зарплата:</b></label> 
+        <input type="text" id="avgResult" value="350" readonly><br><br>
+        
+        <button type="button" onclick="calculateAverage()">Вычислить</button>
+        <button type="reset" onclick="setTimeout(calculateAverage, 10)">Обновить</button>
+    </form>
+
+    <script>
+    function calculateAverage() {
+        // Собираем идентификаторы всех месяцев
+        const monthIds = ['m1', 'm2', 'm3', 'm4', 'm5', 'm6'];
+        let total = 0;
+        
+        monthIds.forEach(id => {
+            // Извлекаем значение, преобразуем в число (если пусто — берем 0)
+            let val = parseFloat(document.getElementById(id).value) || 0;
+            total += val;
+        });
+        
+        let avg = total / monthIds.length;
+        
+        // Записываем результат, округляя до сотых
+        document.getElementById('avgResult').value = avg.toFixed(2);
+    }
+    </script>
+</body>
+</html>
