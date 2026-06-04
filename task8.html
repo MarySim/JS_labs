@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Динамическая регистрация</title>
+    <link rel="stylesheet" href="loader.css">
+    <style>
+        body { font-family: 'Times New Roman', serif; background: #e9ecef; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        main { display: none; width: 100%; max-width: 500px; margin-top: 50px; }
+        .frame-box { background: white; padding: 25px; border: 1px solid #cccccc; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .hidden { display: none; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #aaa; border-radius: 4px; }
+        
+        /* Стили для кредитной карты (4 поля в ряд) */
+        .cc-group { display: flex; gap: 8px; }
+        .cc-group input { text-align: center; font-family: monospace; font-size: 16px; }
+        
+        .btn-group { display: flex; justify-content: space-between; margin-top: 20px; }
+        button { padding: 9px 18px; font-size: 14px; cursor: pointer; border-radius: 4px; border: 1px solid #666; }
+        button:disabled { opacity: 0.4; cursor: not-allowed; }
+        
+        /* Индикатор этапов выполнения */
+        .indicator-container { margin-bottom: 15px; font-size: 14px; font-weight: bold; }
+        .indicator-track { width: 100%; height: 8px; background: #ddd; border-radius: 4px; margin-top: 5px; overflow: hidden; }
+        .indicator-bar { width: 0%; height: 100%; background: #28a745; transition: width 0.3s ease; }
+    </style>
+</head>
+<body>
+
+    <section id="loader-container">
+        <h3>Симуляция загрузки компонентов...</h3>
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+    </section>
+    <script src="loader.js"></script>
+
+    <main id="main-app">
+        
+        <div id="registration-wizard-info" class="hidden">
+            <div class="indicator-container">
+                <span id="wizard-step-title">Шаг 1 из 3</span>
+                <div class="indicator-track"><div class="indicator-bar" id="wizard-bar"></div></div>
+            </div>
+        </div>
+
+        <section id="frame_1" class="frame-box">
+            <h2>Регистрация нового пользователя</h2>
+            <p>Для создания учетной записи пройдите три простых шага проверки.</p>
+            <button onclick="switchStep(1)">Регистрация</button>
+        </section>
+
+        <section id="step_1" class="frame-box hidden">
+            <h3>Шаг 1: Персональные данные</h3>
+            <div class="form-group">
+                <label>Имя:</label> <input type="text" class="step1-required" id="uName">
+            </div>
+            <div class="form-group">
+                <label>Фамилия:</label> <input type="text" class="step1-required" id="uSurname">
+            </div>
+            <div class="form-group">
+                <label>Email:</label> <input type="email" class="step1-required" id="uEmail">
+            </div>
+            <div class="form-group">
+                <label>Страна:</label> <select id="uCountry"></select>
+            </div>
+            <div class="form-group">
+                <label>Пароль:</label> <input type="password" class="step1-required" id="uPass">
+            </div>
+            <div class="form-group">
+                <label>Подтверждение пароля:</label> <input type="password" class="step1-required" id="uPassConf">
+            </div>
+            <div class="btn-group">
+                <button type="button" onclick="resetToHome()">Отмена</button>
+                <button type="button" id="btn-next-1" onclick="switchStep(2)" disabled>Далее</button>
+            </div>
+        </section>
+
+        <section id="step_2" class="frame-box hidden">
+            <h3>Шаг 2: Подтверждение телефона</h3>
+            <div class="form-group">
+                <label>Номер мобильного телефона:</label>
+                <input type="tel" id="uPhone" placeholder="+7 (999) 000-00-00">
+            </div>
+            <button type="button" onclick="simulateSmsSending()">Отправить код</button>
+
+            <div id="sms-verification-block" class="form-group hidden" style="margin-top: 20px; padding: 10px; background: #f8f9fa; border: 1px dashed #777;">
+                <label>Введите код подтверждения (4 цифры):</label>
+                <input type="text" id="smsCode" maxlength="4" placeholder="ХХХХ">
+                <button type="button" onclick="verifySmsCode()" style="margin-top: 8px;">Проверить</button>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" onclick="switchStep(1)">Назад</button>
+                <button type="button" id="btn-next-2" onclick="switchStep(3)" disabled>Далее</button>
+            </div>
+        </section>
+
+        <section id="step_3" class="frame-box hidden">
+            <h3>Шаг 3: Метод оплаты</h3>
+            <div class="form-group">
+                <label>Номер кредитной карты:</label>
+                <div class="cc-group">
+                    <input type="text" class="cc-node" maxlength="4" placeholder="0000">
+                    <input type="text" class="cc-node" maxlength="4" placeholder="0000">
+                    <input type="text" class="cc-node" maxlength="4" placeholder="0000">
+                    <input type="text" class="cc-node" maxlength="4" placeholder="0000">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Срок действия (ММ/ГГ):</label> <input type="text" placeholder="12/29" style="width: 90px;">
+            </div>
+            <div class="form-group">
+                <label>CVC код:</label> <input type="password" maxlength="3" style="width: 70px;">
+            </div>
+            <div class="btn-group">
+                <button type="button" onclick="switchStep(2)">Назад</button>
+                <button type="button" onclick="switchStep('final')">Завершить</button>
+            </div>
+        </section>
+
+        <section id="step_final" class="frame-box hidden">
+            <h2>Поздравляем!</h2>
+            <p>Процедура регистрации успешно завершена. Все данные сохранены в системе.</p>
+        </section>
+
+    </main>
+
+    <script>
+    // 1. Динамическое наполнение стран из массива через DOM API
+    const countryList = ["Россия", "Беларусь", "Казахстан", "Армения", "Киргизия", "Китай", "Турция", "ОАЭ"];
+    const selectElement = document.getElementById('uCountry');
+    countryList.forEach(country => {
+        let option = document.createElement('option');
+        option.value = country;
+        option.textContent = country;
+        selectElement.appendChild(option);
+    });
+
+    // 2. Универсальная функция переключения шагов и управления прогресс-баром
+    function switchStep(step) {
+        // Скрываем абсолютно все секции внутри главного блока
+        document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+        
+        const wizardInfo = document.getElementById('registration-wizard-info');
+        const bar = document.getElementById('wizard-bar');
+        const text = document.getElementById('wizard-step-title');
+
+        if (step === 1) {
+            document.getElementById('step_1').classList.remove('hidden');
+            wizardInfo.classList.remove('hidden');
+            text.textContent = "Шаг 1 из 3: Персональные данные";
+            bar.style.width = "0%";
+        } else if (step === 2) {
+            document.getElementById('step_2').classList.remove('hidden');
+            wizardInfo.classList.remove('hidden');
+            text.textContent = "Шаг 2 из 3: Подтверждение телефона";
+            bar.style.width = "33%";
+        } else if (step === 3) {
+            document.getElementById('step_3').classList.remove('hidden');
+            wizardInfo.classList.remove('hidden');
+            text.textContent = "Шаг 3 из 3: Метод оплаты";
+            bar.style.width = "66%";
+        } else if (step === 'final') {
+            document.getElementById('step_final').classList.remove('hidden');
+            wizardInfo.classList.remove('hidden');
+            text.textContent = "Готово!";
+            bar.style.width = "100%";
+        }
+    }
+
+    function resetToHome() {
+        document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+        document.getElementById('frame_1').classList.remove('hidden');
+        document.getElementById('registration-wizard-info').classList.add('hidden');
+    }
+
+    // 3. Валидация Шага 1: Кнопка "Далее" активна, если всё заполнено и пароли совпали
+    const requiredInputs = document.querySelectorAll('.step1-required');
+    requiredInputs.forEach(element => {
+        element.addEventListener('input', () => {
+            let isValid = true;
+            
+            // Проверяем заполненность всех полей
+            requiredInputs.forEach(input => {
+                if (!input.value.trim()) isValid = false;
+            });
+
+            // Проверяем совпадение паролей
+            const p1 = document.getElementById('uPass').value;
+            const p2 = document.getElementById('uPassConf').value;
+            if (p1 !== p2 || !p1) isValid = false;
+
+            document.getElementById('btn-next-1').disabled = !isValid;
+        });
+    });
+
+    // 4. Логика Шага 2 (СМС-валидация)
+    function simulateSmsSending() {
+        const phone = document.getElementById('uPhone').value.trim();
+        if (phone.length > 5) {
+            document.getElementById('sms-verification-block').classList.remove('hidden');
+            alert("СМС-код отправлен! (Для теста введите любое 4-значное число)");
+        } else {
+            alert("Пожалуйста, укажите корректный номер телефона!");
+        }
+    }
+
+    function verifySmsCode() {
+        const code = document.getElementById('smsCode').value;
+        // Регулярное выражение проверяет, что введено ровно 4 цифры
+        if (/^\d{4}$/.test(code)) {
+            document.getElementById('btn-next-2').disabled = false;
+            alert("Код подтвержден. Нажмите 'Далее'.");
+        } else {
+            alert("Ошибка: Код должен состоять из четырех цифр!");
+        }
+    }
+
+    // 5. Дополнительно: Автофокус по полям номера кредитной карты
+    const ccFields = document.querySelectorAll('.cc-node');
+    ccFields.forEach((field, idx) => {
+        field.addEventListener('input', () => {
+            // Если текущее поле заполнилось (4 символа) — переносим фокус на следующее
+            if (field.value.length === 4 && idx < ccFields.length - 1) {
+                ccFields[idx + 1].focus();
+            }
+        });
+
+        field.addEventListener('keydown', (e) => {
+            // Если нажат Backspace в пустом поле — возвращаемся на предыдущее
+            if (e.key === 'Backspace' && field.value.length === 0 && idx > 0) {
+                ccFields[idx - 1].focus();
+            }
+        });
+    });
+    </script>
+</body>
+</html>
