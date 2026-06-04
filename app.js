@@ -1,290 +1,280 @@
-// Лабораторная работа 4
-// Асинхронность
+// Задание 1
 
 console.log('\n-------------------------------------------------------------------------\n');
-console.log('Асинхронность\n');
 console.log('Задание 1\n');
+let promise = new Promise(function(resolve, reject) {
+  resolve(1);
+  setTimeout(() => resolve(2), 1000);
+});
+promise.then(console.log);
 
-// 1. Функция проверки пароля с коллбэками
-function ask_password(login, password, success, failure) {
-    // Приводим к нижнему регистру
-    login = login.toLowerCase();
-    password = password.toLowerCase();
-    
-    // Гласные буквы (a,e,i,o,u,y)
-    let vowels = ['a', 'e', 'i', 'o', 'u', 'y'];
-    
-    // Подсчет гласных в пароле
-    let vowelCount = 0;
-    for (let i = 0; i < password.length; i++) {
-        if (vowels.includes(password[i])) {
-            vowelCount++;
-        }
-    }
-    
-    // Извлекаем согласные из логина
-    let loginConsonants = '';
-    for (let i = 0; i < login.length; i++) {
-        if (!vowels.includes(login[i])) {
-            loginConsonants += login[i];
-        }
-    }
-    
-    // Извлекаем согласные из пароля
-    let passwordConsonants = '';
-    for (let i = 0; i < password.length; i++) {
-        if (!vowels.includes(password[i])) {
-            passwordConsonants += password[i];
-        }
-    }
-    
-    // Проверка условий
-    let wrongVowels = (vowelCount !== 3);
-    let wrongConsonants = (loginConsonants !== passwordConsonants);
-    
-    // Вызов соответствующих коллбэков
-    if (!wrongVowels && !wrongConsonants) {
-        success(login);
-    } else if (wrongVowels && wrongConsonants) {
-        failure(login, "Everything is wrong");
-    } else if (wrongVowels) {
-        failure(login, "Wrong number of vowels");
-    } else {
-        failure(login, "Wrong consonants");
-    }
-}
-
-// Функция main
-function main(login, password) {
-    ask_password(login, password,
-        function(login) {
-            console.log(`Привет, ${login}!`);
-        },
-        function(login, error) {
-            console.log(`Кто-то пытался притвориться пользователем ${login}, но в пароле допустил ошибку: ${error.toUpperCase()}.`);
-        }
-    );
-}
-
-// Тестирование задания 1
-console.log('Тест 1: правильный пароль "aaalgn" для логина "login"');
-main("login", "aaalgn");
-
-console.log('\nТест 2: правильный пароль "luagon" для логина "login"');
-main("login", "luagon");
-
-console.log('\nТест 3: неправильный пароль (неверное число гласных)');
-main("login", "aaaaaa");
-
-console.log('\nТест 4: неправильный пароль (неверные согласные)');
-main("login", "logiin");
-
-console.log('\nТест 5: всё неправильно');
-main("login", "bbbbbb");
+// Задание 2
 
 console.log('\n-------------------------------------------------------------------------\n');
 console.log('Задание 2\n');
-
-// Исходные асинхронные функции (не изменяем)
-function readConfig(name, callback) {
-    setTimeout(() => {
-        console.log('(1) config from ' + name + ' loaded');
-        callback();
-    }, Math.floor(Math.random() * 1000));
-}
-
-function doQuery(statement, callback) {
-    setTimeout(() => {
-        console.log('(2) SQL query executed: ' + statement);
-        callback();
-    }, Math.floor(Math.random() * 1000));
-}
-
-function httpGet(url, callback) {
-    setTimeout(() => {
-        console.log('(3) Page retrieved: ' + url);
-        callback();
-    }, Math.floor(Math.random() * 1000));
-}
-
-function readFile(path, callback) {
-    setTimeout(() => {
-        console.log('(4) Readme file from ' + path + ' loaded');
-        callback();
-    }, Math.floor(Math.random() * 1000));
-}
-
-function finalCallback() {
-    console.log('It is done!');
-}
-
-console.log('\nРешение через коллбэки (callback)\n');
-
-// Вызов через коллбэки (последовательный)
-console.log('start');
-readConfig('myConfig', function() {
-    doQuery('select * from cities', function() {
-        httpGet('http://google.com', function() {
-            readFile('README.md', function() {
-                finalCallback();
-                console.log('end');
-            });
-        });
+// 1. Модифицированные функции, которые теперь возвращают Promise
+function readConfig(name) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            console.log(`(1) config from ${name} loaded`);
+            resolve(); // Сигнализируем об успешном выполнении промиса
+        }, Math.floor(Math.random() * 1000));
     });
-});
+}
 
-// Небольшая задержка, чтобы разделить вывод
-setTimeout(() => {
-    console.log('\nРешение через функции-уведомители (notification)\n');
-    
-    // Вызов через функции-уведомители (последовательный)
-    console.log('start');
-    
-    let step = 0;
-    
-    function next() {
-        step++;
-        switch(step) {
-            case 1:
-                readConfig('myConfig', next);
-                break;
-            case 2:
-                doQuery('select * from cities', next);
-                break;
-            case 3:
-                httpGet('http://google.com', next);
-                break;
-            case 4:
-                readFile('README.md', next);
-                break;
-            case 5:
-                finalCallback();
-                console.log('end');
-                break;
-            default:
-                break;
-        }
-    }
-    
-    next();
-}, 5000);
+function doQuery(statement) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            console.log(`(2) SQL query executed: ${statement}`);
+            resolve();
+        }, Math.floor(Math.random() * 1000));
+    });
+}
+
+function httpGet(url) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            console.log(`(3) Page retrieved: ${url}`);
+            resolve();
+        }, Math.floor(Math.random() * 1000));
+    });
+}
+
+function readFile(path) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            console.log(`(4) Readme file from ${path} loaded`);
+            resolve();
+        }, Math.floor(Math.random() * 1000));
+    });
+}
+
+// 2. Вызов функций в строгой последовательности с помощью цепочки .then()
+console.log('start');
+
+readConfig('myConfig')
+    .then(() => {
+        // Возвращаем следующий промис, чтобы продолжить цепочку
+        return doQuery('select * from cities');
+    })
+    .then(() => {
+        return httpGet('http://google.com');
+    })
+    .then(() => {
+        return readFile('README.md');
+    })
+    .then(() => {
+        console.log('It is done!');
+        console.log('end');
+    })
+    .catch((error) => {
+        console.error('Произошла ошибка в цепочке:', error);
+    });
+
+// Задание 3
 
 console.log('\n-------------------------------------------------------------------------\n');
 console.log('Задание 3\n');
+// Иммитируем асинхронные математические функции fi(x), возвращающие Promise
+const f1 = (x) => new Promise(res => setTimeout(() => res(x * x), 200));  
+const f2 = (x) => new Promise(res => setTimeout(() => res(2 * x), 200));  
+const f3 = (x) => new Promise(res => setTimeout(() => res(-2), 200));   
+const f4 = (x) => new Promise(res => setTimeout(() => res(x), 200));     
+const f5 = (x) => new Promise(res => setTimeout(() => res(5), 200));  
+const f6 = (x) => new Promise(res => setTimeout(() => res(-x), 200));    
+// Универсальная функция для последовательного вычисления F(x) с помощью цепочки Promise
+function calculateF(x, functionsArray) {
 
-// Асинхронные функции fi(x)
-function f1(x, callback) {
-    setTimeout(() => {
-        let result = x * x;
-        console.log(`f1(${x}) = ${result}`);
-        callback(result);
-    }, Math.floor(Math.random() * 500));
-}
+    let currentPromise = Promise.resolve(0);
 
-function f2(x, callback) {
-    setTimeout(() => {
-        let result = 2 * x;
-        console.log(`f2(${x}) = ${result}`);
-        callback(result);
-    }, Math.floor(Math.random() * 500));
-}
-
-function f3(x, callback) {
-    setTimeout(() => {
-        let result = -2;
-        console.log(`f3(${x}) = ${result}`);
-        callback(result);
-    }, Math.floor(Math.random() * 500));
-}
-
-function f4(x, callback) {
-    setTimeout(() => {
-        let result = x + 5;
-        console.log(`f4(${x}) = ${result}`);
-        callback(result);
-    }, Math.floor(Math.random() * 500));
-}
-
-function f5(x, callback) {
-    setTimeout(() => {
-        let result = x / 2;
-        console.log(`f5(${x}) = ${result}`);
-        callback(result);
-    }, Math.floor(Math.random() * 500));
-}
-
-function f6(x, callback) {
-    setTimeout(() => {
-        let result = 3 * x - 1;
-        console.log(`f6(${x}) = ${result}`);
-        callback(result);
-    }, Math.floor(Math.random() * 500));
-}
-
-// Основная функция для последовательного вычисления через функции-уведомители
-function computeF(x, functions, index, currentSum, callback) {
-    if (index >= functions.length) {
-        callback(currentSum);
-        return;
-    }
-    
-    functions[index](x, function(value) {
-        let newSum = currentSum + value;
-        console.log(`Промежуточный результат после f${index+1}: ${newSum}`);
-        computeF(x, functions, index + 1, newSum, callback);
+    functionsArray.forEach((f, index) => {
+        // Наслаиваем цепочку .then()
+        currentPromise = currentPromise.then((intermediateResult) => {
+            // Вызываем текущую асинхронную функцию
+            return f(x).then((value) => {
+                let newResult = intermediateResult + value;
+                console.log(`  f${index + 1} дает значение ${value}, промежуточный результат ${newResult}`);
+                return newResult; // передаем обновленный результат на следующую итерацию
+            });
+        });
     });
+
+    return currentPromise;
 }
 
-// Функция для запуска вычислений
-function calculateF(x, n) {
-    let functions = [f1, f2, f3, f4, f5, f6];
-    let selectedFuncs = functions.slice(0, n);
-    
-    console.log(`\n========== Вычисление F(${x}) для n = ${n} ==========`);
-    
-    // Выводим формулу
-    let formula = '';
-    for (let i = 0; i < n; i++) {
-        if (i > 0) formula += ' + ';
-        switch(i) {
-            case 0: formula += 'x²'; break;
-            case 1: formula += '2x'; break;
-            case 2: formula += '-2'; break;
-            case 3: formula += 'x+5'; break;
-            case 4: formula += 'x/2'; break;
-            case 5: formula += '3x-1'; break;
+const xValue = 3;
+
+console.log(`--- Тест А: n = 2 ---`);
+calculateF(xValue, [f1, f2])
+    .then(finalAnswer => {
+        console.log(`Итоговый ответ для F(x) при n=2: ${finalAnswer}\n`);
+        
+        console.log(`--- Тест B: n = 4 ---`);
+        return calculateF(xValue, [f1, f2, f3, f4]);
+    })
+    .then(finalAnswer => {
+        console.log(`Итоговый ответ для F(x) при n=4: ${finalAnswer}\n`);
+        
+        console.log(`--- Тест C: n = 6 ---`);
+        return calculateF(xValue, [f1, f2, f3, f4, f5, f6]);
+    })
+    .then(finalAnswer => {
+        console.log(`Итоговый ответ для F(x) при n=6: ${finalAnswer}\n`);
+    });
+
+// Задание 4
+
+console.log('\n-------------------------------------------------------------------------\n');
+console.log('Задание 4\n');
+function addNumbersPromise(a, b) {
+    return new Promise((resolve, reject) => {
+        // Проверка типов аргументов на Number
+        if (typeof a !== 'number' || typeof b !== 'number' || isNaN(a) || isNaN(b)) {
+            return reject(new Error("Отклонено: Оба аргумента должны быть числами"));
         }
-    }
-    console.log(`Формула: F(x) = ${formula}`);
-    console.log('Вычисление:');
-    
-    computeF(x, selectedFuncs, 0, 0, function(result) {
-        console.log(`========== ИТОГ: F(${x}) = ${result} ==========`);
+
+        let currentSum = a;
+        let iteration = 0;
+        
+        console.log(`--- Старт Promise: база=${a}, слагаемое=${b} ---`);
+
+        // Запускаем интервал каждые 2 секунды
+        const intervalId = setInterval(() => {
+            iteration++;
+            currentSum += b;
+            
+            // Вывод суммы и итерации в консол
+            console.log(`[Promise] Итерация ${iteration}: сумма = ${currentSum}`);
+
+            if (iteration === 5) {
+                clearInterval(intervalId);
+                resolve(currentSum);
+            }
+        }, 2000);
     });
 }
 
-// Задержка между тестами для наглядности
-setTimeout(() => {
-    calculateF(3, 2);
-}, 10000);
+// Демонстрация успешного выполнения
+addNumbersPromise(10, 5)
+    .then(result => console.log(`[Promise] Итог: ${result}`))
+    .catch(error => console.error(error.message));
 
-setTimeout(() => {
-    calculateF(5, 4);
-}, 13000);
+// Демонстрация вызова ошибки
+addNumbersPromise(10, 'пять')
+    .then(result => console.log(result))
+    .catch(error => console.error(error.message));
 
-setTimeout(() => {
-    calculateF(2, 6);
-}, 16000);
-
-console.log('\n-------------------------------------------------------------------------\n');
-console.log('Пояснения к заданию 3:');
-console.log('f1(x) = x²');
-console.log('f2(x) = 2x');
-console.log('f3(x) = -2');
-console.log('f4(x) = x+5');
-console.log('f5(x) = x/2');
-console.log('f6(x) = 3x-1');
-console.log('\nПрограмма вычисляет значение функции F(x) = f1(x) + f2(x) + ... + fn(x)');
-console.log('Функции выполняются последовательно, промежуточный результат передаётся дальше');
+// Задание 5
 
 console.log('\n-------------------------------------------------------------------------\n');
+console.log('Задание 5\n');
+// Вспомогательная функция задержки
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function addNumbersAsync(a, b) {
+    if (typeof a !== 'number' || typeof b !== 'number' || isNaN(a) || isNaN(b)) {
+        throw new Error("Отклонено: Оба аргумента должны быть числами");
+    }
+
+    let currentSum = a;
+    console.log(`--- Старт async/await: база=${a}, слагаемое=${b} ---`);
+
+    for (let i = 1; i <= 5; i++) {
+        await sleep(2000); // приостанавливаем выполнение цикла на 2 сек
+        currentSum += b;
+        console.log(`[Async] Итерация ${i}: сумма = ${currentSum}`);
+    }
+
+    return currentSum; // В async функциях return автоматически оборачивается в resolve()
+}
+
+async function demoAsync() {
+    try {
+        const result = await addNumbersAsync(20, 10);
+        console.log(`[Async] Итог: ${result}`);
+    } catch (error) {
+        console.error(error.message);
+    }
+
+    try {
+        await addNumbersAsync(20, null);
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+demoAsync();
+
+// Задание 6
+
+console.log('\n-------------------------------------------------------------------------\n');
+console.log('Задание 6\n');
+async function wait() {
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  return 10;
+}
+
+function f() {
+  // Вызываем wait(), который возвращает Promise, и используем метод .then(), чтобы получить результат
+  wait().then(result => {
+      console.log(result); // Выведет 10 через 1 секунду
+  });
+}
+
+f();
+
+// Задание 7
+
+console.log('\n-------------------------------------------------------------------------\n');
+console.log('Задание 7\n');
+const delay = (timeUnits) => new Promise(resolve => setTimeout(resolve, timeUnits * 100));
+
+async function processCandidate(candidateData) {
+    // Деструктурируем массив для удобства
+    const [name, prep1, def1, prep2, def2] = candidateData;
+
+    // ЗАДАНИЕ 1
+    console.log('\n-------------------------------------------------------------------------\n');
+    console.log('Первое\n');
+    console.log(`${name} started the 1 task.`);
+    await delay(prep1); // подготовка 1
+    
+    console.log(`${name} moved on to the defense of the 1 task.`);
+    await delay(def1); // защита 1
+    
+    console.log(`${name} completed the 1 task.`);
+
+    // ОТДЫХ
+    console.log('\n-------------------------------------------------------------------------\n');
+    console.log('Отдых\n');
+    console.log(`${name} is resting.`);
+    await delay(5); // фиксированный отдых 5 единиц времени
+
+    // ЗАДАНИЕ 2
+    console.log('\n-------------------------------------------------------------------------\n');
+    console.log('Второе\n');
+    // Второе задание начинается строго после отдыха
+    console.log(`${name} started the 2 task.`);
+    await delay(prep2);
+    
+    console.log(`${name} moved on to the defense of the 2 task.`);
+    await delay(def2);
+    
+    console.log(`${name} completed the 2 task.`);
+}
+
+async function interviews(candidates) {
+    // Запускаем обработку каждого кандидата параллельно
+    // map создаст массив промисов, которые начнут выполняться одновременно
+    const interviewPromises = candidates.map(candidate => processCandidate(candidate));
+
+    await Promise.all(interviewPromises);
+}
+
+const candidates = [
+    ['Ivan', 5, 2, 7, 2], 
+    ['John', 3, 4, 5, 1], 
+    ['Sophia', 4, 2, 5, 1]
+];
+
+interviews(candidates);
